@@ -1,6 +1,83 @@
 import { Challenge } from '@/components/ChallengeCard'
+import { ContractMetadata } from '@/types/blockchain'
 
-export const challenges: Challenge[] = [
+// Sample contract ABIs (in a real implementation, these would be imported from actual contract builds)
+const sampleABI = {
+  "source": {
+    "hash": "0x...",
+    "language": "ink! 4.0.0",
+    "compiler": "rustc 1.68.0"
+  },
+  "contract": {
+    "name": "sample_contract",
+    "version": "0.1.0",
+    "authors": ["OvertheInk Team"]
+  },
+  "spec": {
+    "constructors": [
+      {
+        "args": [],
+        "docs": [],
+        "label": "new",
+        "payable": false,
+        "returnType": {
+          "displayName": ["ink_primitives", "ConstructorResult"],
+          "type": 0
+        },
+        "selector": "0x9bae9d5e"
+      }
+    ],
+    "docs": [],
+    "events": [],
+    "lang_error": {
+      "displayName": ["ink", "LangError"],
+      "type": 1
+    },
+    "messages": [
+      {
+        "args": [],
+        "docs": [],
+        "label": "get_value",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": ["Result"],
+          "type": 2
+        },
+        "selector": "0x8b90919b"
+      },
+      {
+        "args": [
+          {
+            "label": "value",
+            "type": {
+              "displayName": ["u32"],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "label": "set_value",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": ["Result"],
+          "type": 4
+        },
+        "selector": "0x69c6c3b4"
+      }
+    ]
+  },
+  "types": []
+}
+
+export interface ChallengeWithContract extends Challenge {
+  contractMetadata?: ContractMetadata
+  instanceRequired?: boolean
+  deploymentGas?: string
+}
+
+export const challenges: ChallengeWithContract[] = [
   {
     id: 'hello-ink',
     title: 'Hello Ink!',
@@ -10,7 +87,13 @@ export const challenges: Challenge[] = [
     completed: false,
     estimatedTime: '30min',
     participants: 1250,
-    points: 100
+    points: 100,
+    contractMetadata: {
+      address: '5GHvCVpNmJSp6qL4fEPnZgUj9D8rRoD4t9iQ3d8gQ4nGJ7x8', // Sample address for Rococo testnet
+      abi: sampleABI
+    },
+    instanceRequired: true,
+    deploymentGas: '100000000000'
   },
   {
     id: 'storage-basics',
@@ -21,7 +104,13 @@ export const challenges: Challenge[] = [
     completed: false,
     estimatedTime: '45min',
     participants: 980,
-    points: 150
+    points: 150,
+    contractMetadata: {
+      address: '5FhPCVpNmJSp6qL4fEPnZgUj9D8rRoD4t9iQ3d8gQ4nGJ8x9',
+      abi: sampleABI
+    },
+    instanceRequired: true,
+    deploymentGas: '120000000000'
   },
   {
     id: 'token-creation',

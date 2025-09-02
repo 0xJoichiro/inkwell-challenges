@@ -1,10 +1,14 @@
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Clock, Users, Star, Shield, CheckCircle, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, Clock, Users, Star, Shield, CheckCircle, AlertTriangle, Wallet, Terminal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { challenges } from '@/data/challenges'
+import { useBlockchain } from '@/contexts/BlockchainContext'
+import { useWallet } from '@/hooks/useWallet'
+import { useToast } from '@/hooks/use-toast'
+import { useState } from 'react'
 
 const difficultyColors = {
   Beginner: 'bg-success text-success-foreground',
@@ -16,6 +20,11 @@ const difficultyColors = {
 export function ChallengePage() {
   const { id } = useParams<{ id: string }>()
   const challenge = challenges.find(c => c.id === id)
+  const { deployContract, currentContract, api } = useBlockchain()
+  const { isConnected, connectWallet } = useWallet()
+  const { toast } = useToast()
+  const [isDeploying, setIsDeploying] = useState(false)
+  const [hasInstance, setHasInstance] = useState(false)
 
   if (!challenge) {
     return (
@@ -83,27 +92,77 @@ export function ChallengePage() {
               </div>
             </div>
             
-            <div className="lg:text-right">
-              <Button 
-                size="lg" 
-                className={`${
-                  challenge.completed 
-                    ? 'bg-success hover:bg-success/90' 
-                    : 'bg-primary hover:bg-hover shadow-glow'
-                } transition-all duration-300`}
-              >
-                {challenge.completed ? (
-                  <>
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                    Review Solution
-                  </>
-                ) : (
-                  <>
-                    <Shield className="h-5 w-5 mr-2" />
-                    Start Challenge
-                  </>
-                )}
-              </Button>
+            <div className="lg:text-right space-y-3">
+              {!isConnected ? (
+                <Button 
+                  size="lg" 
+                  onClick={connectWallet}
+                  className="bg-warning hover:bg-warning/90 text-warning-foreground"
+                >
+                  <Wallet className="h-5 w-5 mr-2" />
+                  Connect Wallet First
+                </Button>
+              ) : !hasInstance && challenge.instanceRequired ? (
+                <Button 
+                  size="lg" 
+                  onClick={async () => {
+                    if (!challenge.contractMetadata) return
+                    setIsDeploying(true)
+                    try {
+                      const contract = await deployContract(challenge.contractMetadata)
+                      if (contract) {
+                        setHasInstance(true)
+                        toast({
+                          title: "Contract Instance Ready",
+                          description: "Your personal contract instance has been deployed. Check the console!",
+                        })
+                      }
+                    } catch (error) {
+                      toast({
+                        title: "Deployment Failed",
+                        description: "Failed to get contract instance. Please try again.",
+                        variant: "destructive"
+                      })
+                      console.error('Contract deployment error:', error)
+                    } finally {
+                      setIsDeploying(false)
+                    }
+                  }}
+                  disabled={isDeploying}
+                  className="bg-primary hover:bg-hover shadow-glow transition-all duration-300"
+                >
+                  <Shield className="h-5 w-5 mr-2" />
+                  {isDeploying ? 'Getting Instance...' : 'Get New Instance'}
+                </Button>
+              ) : (
+                <div className="flex flex-col space-y-2">
+                  <Button 
+                    size="lg" 
+                    className={`${
+                      challenge.completed 
+                        ? 'bg-success hover:bg-success/90' 
+                        : 'bg-primary hover:bg-hover shadow-glow'
+                    } transition-all duration-300`}
+                  >
+                    {challenge.completed ? (
+                      <>
+                        <CheckCircle className="h-5 w-5 mr-2" />
+                        Review Solution
+                      </>
+                    ) : (
+                      <>
+                        <Terminal className="h-5 w-5 mr-2" />
+                        Submit Instance
+                      </>
+                    )}
+                  </Button>
+                  {hasInstance && (
+                    <p className="text-sm text-muted-foreground text-right">
+                      💡 Open browser console to interact with your contract
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

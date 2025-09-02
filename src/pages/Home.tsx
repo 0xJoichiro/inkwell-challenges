@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Search, Filter, Trophy, Users, Clock } from 'lucide-react'
 import { ChallengeCard } from '@/components/ChallengeCard'
+import { BlockchainStatus } from '@/components/BlockchainStatus'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -83,6 +84,9 @@ export function Home() {
       {/* Main Content */}
       <section className="py-12">
         <div className="container mx-auto px-6">
+          {/* Blockchain Status */}
+          <BlockchainStatus />
+          
           {/* Filters */}
           <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-1 items-center space-x-4">

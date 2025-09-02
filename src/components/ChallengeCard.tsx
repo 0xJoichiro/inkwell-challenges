@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CheckCircle, Circle, Star, Clock, Users } from 'lucide-react'
+import { CheckCircle, Circle, Star, Clock, Users, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { ChallengeWithContract } from '@/data/challenges'
 
 export interface Challenge {
   id: string
@@ -17,7 +18,7 @@ export interface Challenge {
 }
 
 interface ChallengeCardProps {
-  challenge: Challenge
+  challenge: ChallengeWithContract
 }
 
 const difficultyColors = {
@@ -62,9 +63,17 @@ export function ChallengeCard({ challenge }: ChallengeCardProps) {
         </div>
 
         {/* Difficulty Badge */}
-        <Badge className={`${difficultyColors[challenge.difficulty]} text-xs`}>
-          {challenge.difficulty}
-        </Badge>
+        <div className="flex items-center space-x-2">
+          <Badge className={`${difficultyColors[challenge.difficulty]} text-xs`}>
+            {challenge.difficulty}
+          </Badge>
+          {challenge.contractMetadata && (
+            <Badge variant="outline" className="text-xs flex items-center space-x-1">
+              <Shield className="h-3 w-3" />
+              <span>Blockchain</span>
+            </Badge>
+          )}
+        </div>
 
         {/* Stats */}
         <div className="flex items-center justify-between text-xs text-muted-foreground">

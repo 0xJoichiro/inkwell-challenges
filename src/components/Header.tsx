@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useTheme } from '@/contexts/ThemeContext'
+import { WalletButton } from '@/components/WalletButton'
 
 export function Header() {
   const { theme, setTheme } = useTheme()
@@ -92,6 +93,9 @@ export function Header() {
               <span className="hidden sm:inline">Leaderboard</span>
             </Button>
           </Link>
+
+          {/* Wallet Connection */}
+          <WalletButton />
 
           {/* Theme Toggle */}
           <DropdownMenu>
