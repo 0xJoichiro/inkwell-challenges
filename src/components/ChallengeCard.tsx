@@ -32,8 +32,8 @@ export function ChallengeCard({ challenge }: ChallengeCardProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <div 
-      className="challenge-card group relative overflow-hidden rounded-xl border border-card-border bg-gradient-card p-6 transition-all duration-300 hover:border-primary/20"
+    <div
+      className="challenge-card group relative overflow-hidden rounded-xl border border-card-border bg-gradient-card p-4 transition-all duration-300 hover:border-primary/20"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
