@@ -39,8 +39,8 @@ export function ChallengePage() {
               Back to Challenges
             </Button>
           </Link>
+          </div>
         </div>
-      </div>
     )
   }
 
@@ -94,68 +94,70 @@ export function ChallengePage() {
             
             <div className="lg:text-right space-y-3">
               {!isConnected ? (
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   onClick={connectWallet}
                   className="bg-warning hover:bg-warning/90 text-warning-foreground"
                 >
                   <Wallet className="h-5 w-5 mr-2" />
                   Connect Wallet First
                 </Button>
-              ) : !hasInstance && challenge.instanceRequired ? (
-                <Button 
-                  size="lg" 
-                  onClick={async () => {
-                    if (!challenge.contractMetadata) return
-                    setIsDeploying(true)
-                    try {
-                      const contract = await deployContract(challenge.contractMetadata)
-                      if (contract) {
-                        setHasInstance(true)
-                        toast({
-                          title: "Contract Instance Ready",
-                          description: "Your personal contract instance has been deployed. Check the console!",
-                        })
-                      }
-                    } catch (error) {
-                      toast({
-                        title: "Deployment Failed",
-                        description: "Failed to get contract instance. Please try again.",
-                        variant: "destructive"
-                      })
-                      console.error('Contract deployment error:', error)
-                    } finally {
-                      setIsDeploying(false)
-                    }
-                  }}
-                  disabled={isDeploying}
-                  className="bg-primary hover:bg-hover shadow-glow transition-all duration-300"
-                >
-                  <Shield className="h-5 w-5 mr-2" />
-                  {isDeploying ? 'Getting Instance...' : 'Get New Instance'}
-                </Button>
               ) : (
                 <div className="flex flex-col space-y-2">
-                  <Button 
-                    size="lg" 
-                    className={`${
-                      challenge.completed 
-                        ? 'bg-success hover:bg-success/90' 
-                        : 'bg-primary hover:bg-hover shadow-glow'
-                    } transition-all duration-300`}
-                  >
-                    {challenge.completed ? (
-                      <>
-                        <CheckCircle className="h-5 w-5 mr-2" />
-                        Review Solution
-                      </>
-                    ) : (
-                      <>
-                        <Terminal className="h-5 w-5 mr-2" />
-                        Submit Instance
-                      </>
-                    )}
-                  </Button>
+                  <div className="flex space-x-2">
+                    <Button
+                      size="lg"
+                      onClick={async () => {
+                        if (!challenge.contractMetadata) return
+                        setIsDeploying(true)
+                        try {
+                          const contract = await deployContract(challenge.contractMetadata)
+                          if (contract) {
+                            setHasInstance(true)
+                            toast({
+                              title: "Contract Instance Ready",
+                              description: "Your personal contract instance has been deployed. Check the console!",
+                            })
+                          }
+                        } catch (error) {
+                          toast({
+                            title: "Deployment Failed",
+                            description: "Failed to get contract instance. Please try again.",
+                            variant: "destructive"
+                          })
+                          console.error('Contract deployment error:', error)
+                        } finally {
+                          setIsDeploying(false)
+                        }
+                      }}
+                      disabled={isDeploying || hasInstance}
+                      className="bg-primary hover:bg-hover shadow-glow transition-all duration-300"
+                    >
+                      <Shield className="h-5 w-5 mr-2" />
+                      {isDeploying ? 'Getting Instance...' : 'Add Instance'}
+                    </Button>
+                    <Button
+                      size="lg"
+                      className={`${
+                        challenge.completed
+                          ? 'bg-success hover:bg-success/90'
+                          : 'bg-primary hover:bg-hover shadow-glow'
+                      } transition-all duration-300`}
+                      disabled={!hasInstance}
+                    >
+                      {challenge.completed ? (
+                        <>
+                          <CheckCircle className="h-5 w-5 mr-2" />
+                          Review Solution
+                        </>
+                      ) : (
+                        <>
+                          <Terminal className="h-5 w-5 mr-2" />
+                          Submit Instance
+                        </>
+                      )}
+                    </Button>
+                  </div>
                   {hasInstance && (
                     <p className="text-sm text-muted-foreground text-right">
                       💡 Open browser console to interact with your contract
@@ -167,134 +169,6 @@ export function ChallengePage() {
           </div>
         </div>
       </div>
-
-      {/* Content */}
-      <div className="container mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Shield className="h-5 w-5" />
-                  <span>Challenge Overview</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  This challenge will test your understanding of {challenge.title.toLowerCase()} in Ink smart contracts.
-                  You'll need to identify vulnerabilities, implement fixes, and demonstrate your knowledge of secure coding practices.
-                </p>
-                
-                <Separator />
-                
-                <div className="space-y-3">
-                  <h4 className="font-semibold">What you'll learn:</h4>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li className="flex items-start space-x-2">
-                      <span className="text-primary mt-1">•</span>
-                      <span>Core concepts and security patterns in Ink development</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-primary mt-1">•</span>
-                      <span>Common vulnerabilities and how to prevent them</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-primary mt-1">•</span>
-                      <span>Best practices for smart contract security</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-primary mt-1">•</span>
-                      <span>Testing and verification techniques</span>
-                    </li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <AlertTriangle className="h-5 w-5" />
-                  <span>Prerequisites</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Before starting this challenge, make sure you have:
-                  </p>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-success" />
-                      <span>Basic understanding of Rust programming</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-success" />
-                      <span>Familiarity with blockchain concepts</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-success" />
-                      <span>Ink! development environment set up</span>
-                    </li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Challenge Stats</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Completion Rate</span>
-                  <span className="font-semibold">
-                    {Math.round((challenge.participants * 0.3))}%
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Average Time</span>
-                  <span className="font-semibold">{challenge.estimatedTime}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Points Reward</span>
-                  <span className="font-semibold">{challenge.points}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Difficulty</span>
-                  <Badge className={difficultyColors[challenge.difficulty]}>
-                    {challenge.difficulty}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Tools & Resources</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  📚 Ink! Documentation
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  🔧 Cargo Contract
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  🧪 Test Environment
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  💬 Community Discord
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
       </div>
-    </div>
   )
 }
