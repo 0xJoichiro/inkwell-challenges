@@ -1,5 +1,16 @@
-import { Challenge } from '@/components/ChallengeCard'
 import { ContractMetadata } from '@/types/blockchain'
+
+export interface Challenge {
+  id: string
+  title: string
+  description: string
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert'
+  icon: string
+  completed: boolean
+  estimatedTime: string
+  participants: number
+  points: number
+}
 
 // Sample contract ABIs (in a real implementation, these would be imported from actual contract builds)
 const sampleABI = {

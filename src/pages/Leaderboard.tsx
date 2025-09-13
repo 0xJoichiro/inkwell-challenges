@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Trophy, Medal, Award, Users, TrendingUp, Calendar } from 'lucide-react'
+import { Trophy, Medal, Award, Users, TrendingUp, Calendar, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -140,7 +140,7 @@ export function Leaderboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b border-border bg-gradient-card">
+      <div className="relative border-b border-border bg-gradient-card">
         <div className="container mx-auto px-6 py-12">
           <div className="text-center space-y-4">
             <div className="flex justify-center">
@@ -153,6 +153,14 @@ export function Leaderboard() {
               See how you stack up against other developers in the OvertheInk community.
               Complete challenges, earn points, and climb the ranks!
             </p>
+          </div>
+        </div>
+
+        {/* Coming Soon Overlay */}
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+          <div className="text-center text-white">
+            <X className="h-16 w-16 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold">Coming Soon</h2>
           </div>
         </div>
       </div>
